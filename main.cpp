@@ -13,14 +13,21 @@ using namespace std;
 
 void update(vector<Vechile> v,string **s,Road road){
     for(int i=0;i<v.size();i++){
+	cout<<1<<endl;
     	for(int k=0;k<road.getRoad_Width();k++){
+		cout<<2<<endl;
     		if(v[i].getPosy()==k){
+		cout<<3<<endl;
     			for(int r=k;r>k-v[i].getWidth();r--){
+			cout<<4<<endl;
 		            for(int j=0;j<road.getRoad_Length();j++){
+					cout<<5<<endl;
 		        		if(v[i].getPosx()==j){
+						cout<<6<<endl;
 		        			for(int q=j;q>j-v[i].getLength();q--){
 		        				s[q][r]=v[i].getType().substr(0,1);
 		        			}
+						cout<<2<<endl;
 		        		}
 		        	}
 		        }
@@ -57,23 +64,26 @@ int main(int argc, char* argv[]){
     }
     num=v_vechile.size();
     Vechile vechile[num];
+	
     for(int i=0;i<num;i++)
     	vechile[i]=v_vechile[i];
     vector<Vechile> v_in_vechile;
     i=0;
     Vechile v;
     string **a;
+
     a=new string*[road.getRoad_Length()];//7
+
     for(int i=0;i<road.getRoad_Length();i++)
             a[i]=new string[road.getRoad_Width()+2];
-    
+   
     for(int i=0;i<road.getRoad_Width()+2;i++){
             for(int j=0;j<road.getRoad_Length();j++){
                     a[j][i]=" ";
             }
     }
     
-    
+   
         for(int k=0;k<road.getRoad_Width()+2;k++){
             if(k==0 || k==road.getRoad_Width()+1){
                 for(int i=0;i<road.getRoad_Length();i++){
@@ -81,6 +91,7 @@ int main(int argc, char* argv[]){
                 }
             }
         }
+
     for(int t=0;t<10;t++){
    // while{
 	    //if(readline==){
@@ -89,14 +100,12 @@ int main(int argc, char* argv[]){
     		vec.setPosy(2);
 	    	v_in_vechile.push_back(vec);
 	    	for(int i=0;i<v_in_vechile.size()-1;i++){
-	    		v_in_vechile[i].move();
+	    		v_in_vechile[i].move(1,1);
 	    	}
 	    //}
 	    	
-
-
-
 	    	update(v_in_vechile,a,road);
+		
 	    	display(a,road);
     //}
 	}
