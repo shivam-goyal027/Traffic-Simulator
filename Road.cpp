@@ -43,18 +43,18 @@ int Road::getRoad_Signal() const{
 }
 
 //set variables
-void Road::getRoad_ID(int a){
+void Road::setRoad_ID(int a){
 	Road_ID=a;
 }
-void Road::getSignal_Color(string a){
+void Road::setSignal_Color(string a){
 	Signal_Color=a;
 }
-void Road::getRoad_Length(int a){
+void Road::setRoad_Length(int a){
 	Road_Length=a;
 }
-void Road::getRoad_Width(int a){
+void Road::setRoad_Width(int a){
 	Road_Width=a;
 }
-void Road::getRoad_Signal(int a){
+void Road::setRoad_Signal(int a){
 	Road_Signal=a;
 }
