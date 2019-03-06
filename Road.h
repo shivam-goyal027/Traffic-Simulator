@@ -33,4 +33,5 @@ private:
 	int Road_Width;
 	int Road_Signal;
 	string Signal_Color;
-}
+};
+#endif

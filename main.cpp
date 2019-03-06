@@ -7,11 +7,11 @@
 #include <vector>
 #include <fstream>
 #include "Road.h"
-#include "Vehicle.h"
+#include "Vechile.h"
 using namespace std;
 
 
-void update(vector<Vehicle> v,string **s,Road road){
+void update(vector<Vechile> v,string **s,Road road){
     for(int i=0;i<v.size();i++){
     	for(int k=0;k<road.getRoad_Width();k++){
     		if(v[i].getPosy()==k){
@@ -40,28 +40,28 @@ void display(string **s,Road road){
 
 //void move_all()
 
-int main(int argc, char*argv){
+int main(int argc, char* argv[]){
 	clock_t start = clock();
     int time = 0;
     Road road;
      
-    vector<Vehicle> v_Vehicle;
+    vector<Vechile> v_vechile;
     int i=0;
     int num;
     //cin>>num
     num=1;
     while(i<num){
-    	Vehicle v("Car","Green",2,2,1,1,0.5);
-    	v_Vehicle.push_back(v);
+    	Vechile v("Car","Green",2,2,1,1,1);
+    	v_vechile.push_back(v);
     	i++;
     }
-    num=v_Vehicle.size();
-    Vehicle Vehicle[num];
+    num=v_vechile.size();
+    Vechile vechile[num];
     for(int i=0;i<num;i++)
-    	Vehicle[i]=v_Vehicle[i];
-    vector<Vehicle> v_in_Vehicle;
+    	vechile[i]=v_vechile[i];
+    vector<Vechile> v_in_vechile;
     i=0;
-    Vehicle v;
+    Vechile v;
     string **a;
     a=new string*[road.getRoad_Length()];//7
     for(int i=0;i<road.getRoad_Length();i++)
@@ -84,27 +84,26 @@ int main(int argc, char*argv){
     for(int t=0;t<10;t++){
    // while{
 	    //if(readline==){
-    		Vehicle vec;
-		vec=Vehicle[0]; //later Vehicle[k]
+    		Vechile vec=vechile[0]; //later vechile[k]
     		vec.setPosx(0);
     		vec.setPosy(2);
-	    	v_in_Vehicle.push_back(vec);
-	    	for(int i=0;i<v_in_Vehicle.size()-1;i++){
-	    		v_in_Vehicle[i].move()
+	    	v_in_vechile.push_back(vec);
+	    	for(int i=0;i<v_in_vechile.size()-1;i++){
+	    		v_in_vechile[i].move();
 	    	}
 	    //}
 	    	
 
 
 
-	    	update(v_in_Vehicle,a,road);
+	    	update(v_in_vechile,a,road);
 	    	display(a,road);
     //}
 	}
-    // Vehicle.push_back((Car,Green,2,2,1,1,0.5)) 
-    // Vehicle(Car,Green,2,2,1,1,0.5);
-    // Vehicle(Bus,Red,3,2);
-    // Vehicle(Truck,Green,4,2);
-    // Vehicle(bike,Blue,2,1);
+    // vechile.push_back((Car,Green,2,2,1,1,0.5)) 
+    // Vechile(Car,Green,2,2,1,1,0.5);
+    // Vechile(Bus,Red,3,2);
+    // Vechile(Truck,Green,4,2);
+    // Vechile(bike,Blue,2,1);
 	return 0;
 }
