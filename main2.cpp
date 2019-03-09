@@ -46,7 +46,12 @@ void display(string **s,Road road){
         cout<<endl;
     }
 }
-
+//
+void change(string s){
+    int pos = s.find("="); 
+    s = s.substr(pos+1);
+    cout<<s<<endl;
+}
 //void move_all()
 
 int main(int argc, char* argv[]){
