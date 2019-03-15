@@ -81,42 +81,42 @@ int main(int argc, char* argv[]){
     infile>>c1; //total types of vehicle defined
     //order fixed type length width speed acceleration color
     while(i<c1){
-        string a1,b1,c1;
-        infile>>a1; infile>>b1; infile>>c1;//vehicle type
-        string a2,b2,c2;
-        infile>>a2; infile>>b2; infile>>c2;//vehicle length
-        string a3,b3,c3;
-        infile>>a3; infile>>b3; infile>>c3;//vehicle width
-        string a4,b4,c4;
-        infile>>a4;
-        if(a4=="Rest_Default"){
+        string c1;
+        infile>>change(c1);//vehicle type
+        string c2;
+        infile>>change(c2);//vehicle length
+        string c3;
+        infile>>change(c3);//vehicle width
+        string c4;
+        infile>>c4;
+        if(c4=="Rest_Default"){
             Vehicle_v(c1,stoi(c2),stoi(c3)); //only to set type length and width
             v_vechile.push_back(v);
             i++;
             continue;
         }
         else{
-            infile>>b4; infile>>c4;//vehicle speed
-            string a5,b5,c5;
-            infile>>a5;
-            if(a5=="Rest_Default"){
+            change(c4);//vehicle speed
+            string c5;
+            infile>>c5;
+            if(c5=="Rest_Default"){
                 Vehicle_v(c1,stoi(c2),stoi(c3),stoi(c4)); //only to set type length width speed
                 v_vechile.push_back(v);
                 i++;
                 continue;
             }
             else{
-                infile>>b5; infile>>c5;//vehicle acceleration
-                string a6,b6,c6;
-                infile>>a6;
-                if(a6=="Rest_Default"){
+                change(c5);//vehicle acceleration
+                string c6;
+                infile>>c6;
+                if(c6=="Rest_Default"){
                     Vehicle_v(c1,stoi(c2),stoi(c3),stoi(c4),stoi(c5)); //only to set type length width speed acceleration
                     v_vechile.push_back(v);
                     i++;
                     continue;
                 }
                 else{
-                    infile>>b6; infile>>c6;//vehicle color
+                    change(c6);//vehicle color
                     Vechile v(c1,c6,stoi(c2),stoi(c3),stoi(c4),stoi(c5)); //set all parameters
                     v_vechile.push_back(v);
                 }
