@@ -21,6 +21,9 @@ public:
 	int getLaneFreq() const;
 	int getPosx() const;
 	int getPosy() const;
+        int getSpeed() const;
+	int getDisx() const;
+	int getDisy() const;
 
 	//used for setting parameters
 	void setType(string);
@@ -32,6 +35,9 @@ public:
 	void setLaneFreq(int);
 	void setPosx(int);
 	void setPosy(int);
+        void setSpeed(int);
+	void setDisx(int);
+	void setDisy(int);
 
 	void move();
 
@@ -46,13 +52,17 @@ private:
 	int LaneFreq; //Lane Change Frequency
 	int Posx;
 	int Posy;
+        int Speed;
+	int Disx;
+	int Disy;
 };
 Vechile::Vechile(){
 	Length=0;
 	Width=0;
-	MaxSpeed=1; //for now, later to be taken from configuration file
+	MaxSpeed=3; //for now, later to be taken from configuration file
 	Acceleration=1; //for now, later to be taken from configuration file
 	LaneFreq=1; //for now, later to be taken from configuration file
+	Speed=1;
 }
 
 Vechile::Vechile(string UType,string UColor,int ULength,int UWidth,int UMaxSpeed,int UAcceleration, int ULaneFreq){
@@ -103,6 +113,15 @@ int Vechile::getPosx() const{
 int Vechile::getPosy() const{
 	return Posy;
 }
+int Vechile::getSpeed() const{
+	return Speed;
+}
+int Vechile::getDisx() const{
+	return Disx;
+}
+int Vechile::getDisy() const{
+	return Disy;
+}
 //set any parameter manually
 void Vechile::setType(string s) {
 	Type=s;
@@ -131,9 +150,19 @@ void Vechile::setPosx(int f) {
 void Vechile::setPosy(int f) {
 	Posy=f;
 }
+void Vechile::setSpeed(int f) {
+	Speed=f;
+}
+void Vechile::setDisx(int f){
+	Disx=f;;
+}
+void Vechile::setDisy(int f){
+	Disy=f;
+}
 
 void Vechile::move(){
-	setPosx((getPosx()) + (getMaxSpeed()));
+	setPosx((getPosx()) + (getSpeed()));
 	//Posy=Posy+....;
 }
 #endif
+
