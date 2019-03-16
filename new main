@@ -1,3 +1,4 @@
+//#include <GL/glut.h>
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
@@ -9,6 +10,10 @@
 #include "Road.h"
 #include "Vechile.h"
 using namespace std;
+
+Road road;
+
+string **a;
 
 
 void update(vector<Vechile> v,string **s,Road road){
@@ -47,6 +52,20 @@ void display(string **s,Road road){
         cout<<endl;
     }
 }
+/*
+void drawRoad(){
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(0.95,0.95,0.95);
+    glBegin(GL_POLYGON);
+        //gluOrtho2D(-(0.5),-0.5,0.5,0.5);
+        glVertex2f(-(road.getRoad_Length()/2),(road.getRoad_Width()/2));
+        glVertex2f((road.getRoad_Length()/2),(road.getRoad_Width()/2));
+        glVertex2f((road.getRoad_Length()/2),-(road.getRoad_Width()/2));
+        glVertex2f(-(road.getRoad_Length()/2),-(road.getRoad_Width()/2));
+    glEnd();
+    glFlush();
+}
+*/
 //
 string change(string s){
     int pos = s.find("="); 
@@ -93,9 +112,10 @@ bool is_between(int a,int b,int c){
 //v_clash_x is a function that returns a vector of x distances of vechiles that clash with the given vechile.
 vector<int> v_clash_x(Vechile v0,vector<Vechile> v){
 	vector<int> ret;
+	
 	for(int i=0;i<v.size();i++){
-		if(v[i].getPosx()!=v0.getPosx() && v[i].getPosy()!=v0.getPosy()){
-			if((is_between(v[i].getPosy(),v0.getPosy(),v0.getPosy()-v0.getWidth()) || is_between(v[i].getPosy()-v[i].getWidth(),v0.getPosy(),v0.getPosy()-v0.getWidth())) && v[i].getPosx()-v[i].getLength()>v0.getPosx()){
+		if(v[i].getPosx()!=v0.getPosx() || v[i].getPosy()!=v0.getPosy()){
+			if((is_between(v[i].getPosy(),v0.getPosy(),v0.getPosy()-v0.getWidth()) || is_between(v[i].getPosy()-v[i].getWidth(),v0.getPosy(),v0.getPosy()-v0.getWidth())) && v[i].getPosx()-v[i].getLength()>=v0.getPosx()){
 				ret.push_back(v[i].getPosx()-v[i].getLength()-v0.getPosx()); //v[i].getPosx-v[i].getWidth-v0.getPosx // this is the xdis b/w the vechiles ,that is >=1
 			}
 		}
@@ -111,20 +131,29 @@ int check_x(Vechile v){
 	if(v.getDisx()>v.getSpeed()+v.getAcceleration()){
 		return v.getSpeed()+v.getAcceleration();
 	}
-	else if(v.getDisx()<v.getSpeed()+v.getAcceleration() && v.getDisx()>v.getSpeed()){
+	else if(v.getDisx()<=v.getSpeed()+v.getAcceleration() && v.getDisx()>v.getSpeed()){
 		return v.getSpeed();
 	}
-	else if(v.getDisx()>v.getSpeed()-v.getAcceleration() && v.getDisx()<v.getSpeed()){
+	else if(v.getDisx()>v.getSpeed()-v.getAcceleration() && v.getDisx()<=v.getSpeed()){
 		return v.getSpeed()-v.getAcceleration(); 
+	}
+	else if(v.getDisx()>v.getSpeed()-2*v.getAcceleration() && v.getDisx()<=v.getSpeed()-v.getAcceleration()){
+		return v.getSpeed()-2*v.getAcceleration(); 
 	}
 	return 0;
 }
 //void move_all()
 
 int main(int argc, char* argv[]){
-    clock_t start = clock();
-    int time = 0;
-    Road road;
+    /*
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("Traffic System");
+    gluOrtho2D(-50, 50, -50, 50);
+    */
+    //Road road;
     ifstream infile;
     infile.open("config.ini");
     if(!infile.is_open()){
@@ -143,11 +172,9 @@ int main(int argc, char* argv[]){
     infile>>a1; a1=change(a1);
     road.setRoad_Signal(stoi(a1));
     
-    string **a;
     a=new string*[road.getRoad_Length()];//7
-    for(int i=0;i<road.getRoad_Length();i++)
-        a[i]=new string[road.getRoad_Width()+2];
-    
+        for(int i=0;i<road.getRoad_Length();i++)
+            a[i]=new string[road.getRoad_Width()+2];
     for(int i=0;i<road.getRoad_Width()+2;i++){
             for(int j=0;j<road.getRoad_Length();j++){
                     a[j][i]=" ";
@@ -228,14 +255,17 @@ int main(int argc, char* argv[]){
                 v_vechile[i].setPosy(4*i + 3);
                 //cout<<v_vechile[i].getWidth()<<endl;
                  
-                v_in_vechile.push_back(v_vechile[i]);
                //cout<<v_in_vechile[0].getWidth()<<endl;
                 //cout<<v_in_vechile.size()<<endl;
                 
                 for(int i=0;i<v_in_vechile.size();i++){
-                    v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx())); 
+			
+		    if(road.getSignal_Color()=="RED")
+                    	v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx()));
+		    else
+			v_in_vechile[i].setDisx(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)));
                 }
-                for(int i=0;i<v_in_vechile.size();i++){cout<<i<<":"<<v_in_vechile[i].getDisx()<<endl;}
+                //for(int i=0;i<v_in_vechile.size();i++){cout<<i<<":"<<v_in_vechile[i].getDisx()<<endl;}
                 //cout<<v_in_vechile[i].getDisx()<<endl;
                 for(int i=0;i<v_in_vechile.size();i++){
                         if(check_x(v_in_vechile[i])>=v_in_vechile[i].getMaxSpeed()){
@@ -250,6 +280,7 @@ int main(int argc, char* argv[]){
                                 }
                         }
                 }
+		v_in_vechile.push_back(v_vechile[i]);
                 for (int i=1;i<road.getRoad_Width()+1;i++){
                     for(int j=0;j<road.getRoad_Length();j++){
                         a[j][i]=" ";
@@ -268,10 +299,14 @@ int main(int argc, char* argv[]){
                 int time_run = stoi(change(k));
                 while(time_run>0){
                     
-                    for(int i=0;i<v_in_vechile.size();i++){ 
-                        v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx())); //v_clash_x is a function that returns a vector of x 		distances of vechiles that clash with the given vechile.
+                    for(int i=0;i<v_in_vechile.size();i++){
+			if(road.getSignal_Color()=="RED")
+                        	v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx()));
+			else
+				v_in_vechile[i].setDisx(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)));
+ //v_clash_x is a function that returns a vector of x 		distances of vechiles that clash with the given vechile.
                     }
-                    
+                    //for(int i=0;i<v_in_vechile.size();i++){cout<<i<<":"<<v_in_vechile[i].getDisx()<<endl;}
                     for(int i=0;i<v_in_vechile.size();i++){
                             if(check_x(v_in_vechile[i])>=v_in_vechile[i].getMaxSpeed()){
                                     v_in_vechile[i].setSpeed(v_in_vechile[i].getMaxSpeed());	
@@ -295,7 +330,7 @@ int main(int argc, char* argv[]){
                         v_in_vechile[i].move();
                     }
                     update(v_in_vechile,a,road);
-                    //display(a,road);
+                    display(a,road);
                     time_run--;
                 }
             }
@@ -303,7 +338,11 @@ int main(int argc, char* argv[]){
             if(change2(k)=="Signal"){
                 road.setSignal_Color(change(k));
                 for(int i=0;i<v_in_vechile.size();i++){ //v_in is the vector of vechiles in the road
-                    v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx())); //v_clash_x is a function that returns a vector of x 		distances of vechiles that clash with the given vechile.
+		    if(road.getSignal_Color()=="RED")
+                    	v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx()));
+		    else
+			v_in_vechile[i].setDisx(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)));
+ //v_clash_x is a function that returns a vector of x 		distances of vechiles that clash with the given vechile.
                 }
                 for(int i=0;i<v_in_vechile.size();i++){
                         if(check_x(v_in_vechile[i])>=v_in_vechile[i].getMaxSpeed()){
@@ -336,6 +375,8 @@ int main(int argc, char* argv[]){
     else{
      cout<<"Invalid Format"<<endl;   
     }
+    //glutDisplayFunc(drawRoad);
+    //glutMainLoop();
     return 0;
 }   
     
