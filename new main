@@ -45,7 +45,7 @@ void display(string **s,Road road){
         cout<<endl;
     }
 }
-//
+
 string change(string s){
     int pos = s.find("="); 
     s = s.substr(pos+1);
@@ -56,13 +56,184 @@ string change2(string s){
     s = s.substr(0,pos);
     return s;
 }
+int min_2(int a,int b){
+	if(b=<0 || a<b){
+		return a;
+	}
+	return b;
+}
+int minimum_all(vector<int> v){
+	int min_all=10000;
+	for(int i=0;i<v.size();i++){
+		if(v[i]<min_all)
+			min_all=v[i];
+	}
+	return min_all;
+}
+vector<int> v_clash_x(Vechile v0,vector<Vechile> v){
+	vector<int> ret;
+	for(int i=0;i<v.size();i++){
+		if(v[i]!=v0){
+			if((is_between(v[i].getPosy(),v0.getPosy(),v0.getPosy()-v0.getWidth()) || is_between(v[i].getPosy()-v[i].getWidth(),v0.getPosy(),v0.getPosy()-v0.getWidth())) && v[i].getPosx()-v[i].getWidth()>v0.getPosx()){
+				ret.push_back(v[i].getPosx()-v[i].getWidth()-v0.getPosx()); //v[i].getPosx-v[i].getWidth-v0.getPosx // this is the xdis b/w the vechiles ,that is >=1
+			}
+		}
+	}
+	if(ret.size==0){
+		ret.push_back(10000);
+	}
+	reteurn ret;
+}
+
+bool is_between(int a,int b,int c){
+	if(a=<b && a>=c ){
+		return true;
+	}
+	return false;
+}
+
+int check_x(Vechile v){
+	if(v.getDisx()>v.getSpeed()+v.getAcceleration()){
+		return v.getSpeed()+v.getAcceleration();
+	}
+	else if(v.getDisx()<v.getSpeed()+v.getAcceleration() && v.getDisx()>v.getSpeed()){
+		return v.getSpeed();
+	}
+	else if(v.getDisx()>v.getSpeed()-v.getAcceleration() && v.getDisx()<v.getSpeed()){
+		return v.getSpeed()-v.getAcceleration(); 
+	}
+	return 0;
+}
+
 //void move_all()
 
 int main(int argc, char* argv[]){
     clock_t start = clock();
     int time = 0;
     Road road;
-    ifstream infile;
+     
+    vector<Vechile> v_vechile;
+    int i=0;
+    int num;
+    //cin>>num
+    num=1;
+    while(i<num){
+    	Vechile v("Car","Green",2,2,1,1,1);
+    	v_vechile.push_back(v);
+    	i++;
+    }
+    num=v_vechile.size();
+    Vechile vechile[num];
+    for(int i=0;i<num;i++)
+    	vechile[i]=v_vechile[i];
+    vector<Vechile> v_in_vechile;
+    i=0;
+    Vechile v;
+    string **a;
+    a=new string*[road.getRoad_Length()];//7
+    for(int i=0;i<road.getRoad_Length();i++)
+            a[i]=new string[road.getRoad_Width()+2];
+    
+    for(int i=0;i<road.getRoad_Width()+2;i++){
+            for(int j=0;j<road.getRoad_Length();j++){
+                    a[j][i]=" ";
+            }
+    }
+    
+    
+        for(int k=0;k<road.getRoad_Width()+2;k++){
+            if(k==0 || k==road.getRoad_Width()+1){
+                for(int i=0;i<road.getRoad_Length();i++){
+                    a[i][k]="-";
+                }
+            }
+        }
+  
+/* 
+   // while{
+	    //if(readline==){
+    		Vechile vec=vechile[0]; //later vechile[k]
+    		vec.setPosx(0);
+    		vec.setPosy(2);
+	    	v_in_vechile.push_back(vec);
+	    	for(int i=0;i<v_in_vechile.size()-1;i++){
+	    		v_in_vechile[i].move();
+	    	}
+	    //}
+*/
+	    	
+		
+	 for(int t=0;t<40;t++){
+		//display(a,road);
+		//cout<<"a"<<endl;
+		if(t==3){
+    		Vechile vec=vechile[0]; //later vechile[k]
+    		vec.setPosx(0);
+    		vec.setPosy(2);
+	    	v_in_vechile.push_back(vec);
+	    	for(int i=0;i<v_in_vechile.size()-1;i++){
+	    		v_in_vechile[i].move();
+	    	}
+	    }
+		if(t==4){
+    		Vechile vec=vechile[0]; //later vechile[k]
+    		vec.setPosx(0);
+    		vec.setPosy(5);
+	    	v_in_vechile.push_back(vec);
+	    	for(int i=0;i<v_in_vechile.size()-1;i++){
+	    		v_in_vechile[i].move();
+	    	}
+	    }
+		if(t!=3 && t!=4){
+		for(int i=0;i<v_in_vechile.size();i++){
+	    		v_in_vechile[i].move();
+	    	}		
+		}
+	for (int i=1;i<road.getRoad_Width()+1;i++){
+	    	for(int j=0;j<road.getRoad_Length();j++){
+        	    a[j][i]=" ";
+        	}
+    	}
+	for(int i=0;i<v_in_vechile.size();i++){ //v_in is the vector of vechiles in the road
+		v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx)); //v_clash_x is a function that returns a vector of x 		distances of vechiles that clash with the given vechile.
+	}
+
+	for(int i=0;i<v_in_vechile.size();i++){
+		if(check_x(v_in_vechile[i])>=v_in_vechile[i].getMaxSpeed()){
+			v_in_vechile[i].setSpeed(v_in_vechile[i].getMaxSpeed());	
+		}
+		else{
+			if(check_x(v_in_vechile[i])<=0){
+				v_in_vechile[i].setSpeed(0);
+			}
+			else{
+				v_in_vechile[i].setSpeed(check_x(v_in_vechile[i]));
+			}
+		}
+		
+	}
+
+    	update(v_in_vechile,a,road);
+    	display(a,road);
+	//cout<<"b"<<endl;
+	//cout<<v_in_vechile[0].getPosx()<<" "<<v_in_vechile[0].getLength()<<endl;
+    //}
+	}
+    // vechile.push_back((Car,Green,2,2,1,1,0.5)) 
+    // Vechile(Car,Green,2,2,1,1,0.5);
+    // Vechile(Bus,Red,3,2);
+    // Vechile(Truck,Green,4,2);
+    // Vechile(bike,Blue,2,1);
+	return 0;
+}
+
+/*
+for(int i=0;i<v_in_vechile.size();i++){
+	v_in_vechile[i].setChange_to_Right(check_right(v_in_vechile,v_in_vechile[i]))
+}
+*/
+
+ifstream infile;
     infile.open("config.ini");
     if(!infile.is_open()){
         cout<< "Error opening file"<< endl;
@@ -123,183 +294,11 @@ int main(int argc, char* argv[]){
         i++;
         t=t-1;
         //cout<<t<<endl;
-    }
-    
-    infile>>k;
-    cout<<k<<endl;
-    
-}   
-    
- 
-    
-    
-    /*infile>>a1;
-    infile>>b1;
-    infile>>c1; //total types of vechile defined
-    //order fixed type length width speed acceleration color
-    while(i<c1){
-        string c1;
-        infile>>change(c1);//vechile type
-        string c2;
-        infile>>change(c2);//vechile length
-        string c3;
-        infile>>change(c3);//vechile width
-        string c4;
-        infile>>c4;
-        if(c4=="Rest_Default"){
-            Vechile_v(c1,stoi(c2),stoi(c3)); //only to set type length and width
-            v_vechile.push_back(v);
-            i++;
-            continue;
-        }
-        else{
-            change(c4);//vechile speed
-            string c5;
-            infile>>c5;
-            if(c5=="Rest_Default"){
-                Vechile_v(c1,stoi(c2),stoi(c3),stoi(c4)); //only to set type length width speed
-                v_vechile.push_back(v);
-                i++;
-                continue;
-            }
-            else{
-                change(c5);//vechile acceleration
-                string c6;
-                infile>>c6;
-                if(c6=="Rest_Default"){
-                    Vechile_v(c1,stoi(c2),stoi(c3),stoi(c4),stoi(c5)); //only to set type length width speed acceleration
-                    v_vechile.push_back(v);
-                    i++;
-                    continue;
-                }
-                else{
-                    change(c6);//vechile color
-                    Vechile v(c1,c6,stoi(c2),stoi(c3),stoi(c4),stoi(c5)); //set all parameters
-                    v_vechile.push_back(v);
-                }
-            }
-        }
-    	i++;
-    }
-    */
-    
-    
-/*
-    int i=0;
-    int num;
-    //cin>>num
-    num=1;
-    while(i<num){
-    	Vechile v("Car","Green",2,2,1,1,1);
-    	v_vechile.push_back(v);
-    	i++;
-    }
-    num=v_vechile.size();
-    Vechile vechile[num];
-    for(int i=0;i<num;i++)
-    	vechile[i]=v_vechile[i];
-    vector<Vechile> v_in_vechile;
-    i=0;
-    Vechile v;
-    string **a;
-    a=new string*[road.getRoad_Length()];//7
-    for(int i=0;i<road.getRoad_Length();i++)
-            a[i]=new string[road.getRoad_Width()+2];
-    
-    for(int i=0;i<road.getRoad_Width()+2;i++){
-            for(int j=0;j<road.getRoad_Length();j++){
-                    a[j][i]=" ";
-            }
-    }
-    
-    
-        for(int k=0;k<road.getRoad_Width()+2;k++){
-            if(k==0 || k==road.getRoad_Width()+1){
-                for(int i=0;i<road.getRoad_Length();i++){
-                    a[i][k]="-";
-                }
-            }
-        }
-*/
-        
- /* string s;
-  infile>>s;
-  if(s!="START"){
-    cout<<"Wrong order"<<endl;
-    return 0;
-  }
-  string col;//for signal color
-  infile>>s; infile>>col;
-  road.setSignal_Color(col);
-  
-  int num_v;
-  infile>>s; //entry 
-  infile>>s;//=
-  infile>>stoi(num_v);
-  
-  while(num_v>0){
-      //store incoming vechiles in array or vector here
-      num_v--;
-  }/*
-  
-  
-  
-/* 
-   // while{
-	    //if(readline==){
-    		Vechile vec=vechile[0]; //later vechile[k]
-    		vec.setPosx(0);
-    		vec.setPosy(2);
-	    	v_in_vechile.push_back(vec);
-	    	for(int i=0;i<v_in_vechile.size()-1;i++){
-	    		v_in_vechile[i].move();
-	    	}
-	    //}
-*/
-	    	
-/*		
-	 for(int t=0;t<40;t++){
-		//display(a,road);
-		//cout<<"a"<<endl;
-		if(t==3){
-    		Vechile vec=vechile[0]; //later vechile[k]
-    		vec.setPosx(0);
-    		vec.setPosy(2);
-	    	v_in_vechile.push_back(vec);
-                    for(int i=0;i<v_in_vechile.size()-1;i++){
-                            v_in_vechile[i].move();
-                    }
-                }
-		if(t==4){
-    		Vechile vec=vechile[0]; //later vechile[k]
-    		vec.setPosx(0);
-    		vec.setPosy(5);
-	    	v_in_vechile.push_back(vec);
-                    for(int i=0;i<v_in_vechile.size()-1;i++){
-                            v_in_vechile[i].move();
-                    }
-                }
-		if(t!=3 && t!=4){
-                    for(int i=0;i<v_in_vechile.size();i++){
-                            v_in_vechile[i].move();
-                    }		
-		}
-		for (int i=1;i<road.getRoad_Width()+1;i++){
-                    for(int j=0;j<road.getRoad_Length();j++){
-                        a[j][i]=" ";
-                    }
-                }
-	    	update(v_in_vechile,a,road);
-	    	display(a,road);
-		//cout<<"b"<<endl;
-		//cout<<v_in_vechile[0].getPosx()<<" "<<v_in_vechile[0].getLength()<<endl;
-    //}
-	}
-    // vechile.push_back((Car,Green,2,2,1,1,0.5)) 
-    // Vechile(Car,Green,2,2,1,1,0.5);
-    // Vechile(Bus,Red,3,2);
-    // Vechile(Truck,Green,4,2);
-    // Vechile(bike,Blue,2,1);
-	return 0;
 }
-*/
+
+
+
+
+
+
+
