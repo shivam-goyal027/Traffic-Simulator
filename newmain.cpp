@@ -488,6 +488,21 @@ int main(int argc, char* argv[]){
     
     return 0;
 }   
+int check_right(vector<Vechile> v, Vechile v0){
+	for(int i=0;i<v.size;i++){
+		if(v[i].getPosx()!=v0.getPosx() || v[i].getPosy()!=v0.getPosy()){
+			if((is_between(v[i].getPosy(),v0.getPosy(),v0.getPosy()+v0.getWidth()) || is_between(v[i].getPosy()-v[i].getWidth(),v0.getPosy(),v0.getPosy()+v0.getWidth())) && v[i].getPosx()-v[i].getLength()<=v0.getPosx()+v0.getSpeed()+v0.getAcceleration() && v[i].getPosx()+v[i].getSpeed()+v[i].getAcceleration()>=v0.getPosx()-v0.getLength()){
+				return 0;
+			}
+		
+		}			
+	}
+	return 1;
+}
+for(int i=0;i<v_in_vechile.size();i++){
+	if(check_right(v_in_vechile,v_in_vechile[i])==1 && v_in_vechile[i].getDisx()<v_in_vechile[i].getSpeed() && v_in_vechile[i].getSpeed()!=v_in_vechile[i].getMaxSpeed() && v_in_vechile[i].getPosy()+v_in_vechile[i].getWidth()<=road.getRoad_Width()+1)
+	v_in_vechile[i].setPosy(v_in_vechile[i].getPosy()+v_in_vechile[i].getWidth());
+}
     
 
 
