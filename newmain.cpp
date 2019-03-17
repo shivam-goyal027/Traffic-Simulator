@@ -14,8 +14,6 @@ using namespace std;
 Road road;
 string **a;
 vector<Vechile> v_in_vechile;//v_in_vechile is the vector of vechiles in the road
-GLsizei width = road.getRoad_Length();
-GLsizei height = road.getRoad_Width();
 
 void update(vector<Vechile> v,string **s,Road road){
   int i,j,r,q,k;
@@ -53,7 +51,7 @@ void display(string **s,Road road){
         cout<<endl;
     }
 }
-int refreshMills = 30; // refresh interval in milliseconds
+int refreshMills = 40; // refresh interval in milliseconds
 
 /* Called back when timer expired */
 void Timer(int value) {
@@ -165,7 +163,6 @@ void drawRoad(){
         
     glEnd();
     glutSwapBuffers();
-    usleep(1000000);
 }
 
 string change(string s){
