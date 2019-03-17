@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "function.h"
 
 using namespace std;
 
@@ -24,13 +25,13 @@ public:
 	void setRoad_Width(int);
 	void setRoad_Signal(int);
 
-
+	int Road_Length;
+	int Road_Width;
 
 private:
 	//Member Variables
 	int Road_ID;
-	int Road_Length;
-	int Road_Width;
+	
 	int Road_Signal;
 	string Signal_Color;
 };
