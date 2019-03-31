@@ -1,0 +1,89 @@
+if(change2(read_k)=="Simultaneous"){
+                int s = stoi(change(read_k));
+                int s2=s;
+                infile>>read_k;
+		        while(read_k=="#"){
+		            infile.ignore(256,'\n');
+		            infile>>read_k;
+		        }
+		        b=new int*[2];//7
+			        for(int i=0;i<2;i++)
+			            b[i]=new int[s];
+			    	for(int i=0;i<s;i++){
+			            for(int j=0;j<2;j++){
+			                    b[j][i]=" ";
+			            }
+			    }
+                while(s>0){
+                	for(i=0;i<v_vechile.size();i++){
+	                    if(v_vechile[i].getType()==change2(read_k)){
+	                        break;
+	                    }
+	                }
+		            if(i==v_vechile.size())
+	                    cout<<"This vehicle type is not yet defined"<<endl;
+	                
+	                v_vechile[i].setColor(change(read_k));
+	                v_vechile[i].setPosx(0);
+	                int flag=1;int m;
+	                while(flag=1){
+	                	v_vechile[i].setPosy(call_value(a,v_vechile[i])); //store
+	                	for(int m=0;m<i;m++){
+	                		if(!(v_vechile[i].getPosy()<b[m][0] + b[m][1]) || (b[m][0]<(v_vechile[i].getPosy() + v_vechile[i].getWidth()) ) ){
+	                			break;
+	                		}
+	                	}
+	                	if(m==i)
+	                		flag=0;
+	                }
+	           		flag=0;
+	                b[i][0]=v_vechile[i].getPosy();
+	                b[i][1]=v_vechile[i].getWidth();
+	                simult_vechile.push_back(v_vechile[i]);
+                	s--;
+                }
+                
+                
+
+                for(int i=0;i<v_in_vechile.size();i++){
+			
+		    if(road.getSignal_Color()=="RED")
+                    	v_in_vechile[i].setDisx(min_2(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)),road.getRoad_Signal()-v_in_vechile[i].getPosx()));
+		    else
+			v_in_vechile[i].setDisx(minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile)));
+                }
+                for(int i=0;i<v_in_vechile.size();i++){
+                        if(check_right(v_in_vechile,v_in_vechile[i])==1 && ((v_in_vechile[i].getDisx()<v_in_vechile[i].getSpeed() && v_in_vechile[i].getSpeed()!=v_in_vechile[i].getMaxSpeed() && v_in_vechile[i].getPosy()+v_in_vechile[i].getWidth()<=road.getRoad_Width()+1 && minimum_all(v_clash_x(v_in_vechile[i],v_in_vechile))<=road.getRoad_Signal()-v_in_vechile[i].getPosx()) || v_in_vechile[i].getSpeed()==0))
+                            v_in_vechile[i].setPosy(v_in_vechile[i].getPosy()+v_in_vechile[i].getWidth());
+                }
+                for(int i=0;i<v_in_vechile.size();i++){
+                        if(check_x(v_in_vechile[i])>=v_in_vechile[i].getMaxSpeed()){
+                                v_in_vechile[i].setSpeed(v_in_vechile[i].getMaxSpeed());	
+                        }
+                        else{
+                                if(check_x(v_in_vechile[i])<=0){
+                                     v_in_vechile[i].setSpeed(0);
+                                }
+                                else{
+                                        v_in_vechile[i].setSpeed(check_x(v_in_vechile[i]));
+                                }
+                        }
+                }
+                for(int m=0;m<s2;m++){
+                	v_in_vechile.push_back(simult_vechile[m]);
+                }
+		
+                for (int i=1;i<road.getRoad_Width()+1;i++){
+                    for(int j=0;j<road.getRoad_Length();j++){
+                        a[j][i]=" ";
+                    }
+                }
+                
+                for(int i=0;i<v_in_vechile.size()-1;i++){
+                    v_in_vechile[i].move();
+                }
+                 
+                update(v_in_vechile,a,road);
+                display(a,road);
+                drawRoad();
+            }
